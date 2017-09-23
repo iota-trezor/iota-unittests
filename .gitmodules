@@ -1,0 +1,9 @@
+[submodule "vendor/Unity"]
+	path = vendor/Unity
+	url = https://github.com/ThrowTheSwitch/Unity
+[submodule "iota"]
+	path = iota
+	url = git@github.com:iota-trezor/iota.git
+[submodule "vendor/trezor-crypto"]
+	path = vendor/trezor-crypto
+	url = https://github.com/trezor/trezor-crypto
