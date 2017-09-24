@@ -8,14 +8,14 @@ add_subdirectory(vendor)
 
 
 add_executable(conversion_test
-    tests/conversion_test.c
-    iota/conversion.c
-    vendor/trezor-crypto/sha3.c
-
+	tests/conversion_test.c
+	iota/conversion.c
 )
+target_link_libraries(conversion_test Unity)
+add_test(conversion conversion_test)
 
-target_link_libraries(conversion_test
-    Unity
-)
-
-add_test(conversion_test conversion_test)
+add_executable(bigint_test
+	tests/bigint_test.c
+	iota/bigint.c)
+target_link_libraries(bigint_test Unity)
+add_test(bigint bigint_test)
