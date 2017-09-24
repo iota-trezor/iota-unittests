@@ -116,7 +116,7 @@ void test_SuperBigintAddIntWithOverflow()
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_BigIntAddCompleteOverflowError()
+void test_BigintAddCompleteOverflowError()
 {
     int32_t bigint_in[4] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
     int32_t bigint_out[4] = {0};
@@ -132,20 +132,75 @@ void test_BigIntAddCompleteOverflowError()
     TEST_ASSERT_EQUAL(-1, ret);
 }
 
+void test_BigintAddBigintWithoutOverflow()
+{
+    int32_t bigint_one[4] = {0x11223344, 0x12312355, 0x13543612, 0x12333445};
+    int32_t bigint_two[4] = {0x00112233, 0x85642144, 0x12442333, 0x44444444};
+    int32_t bigint_out[4] = {0};
+    int ret;
+
+    ret = bigint_add_bigint(bigint_one, bigint_two, bigint_out, 4);
+    TEST_ASSERT_EQUAL_HEX32(0x11335577, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x97954499, bigint_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x25985945, bigint_out[2]);
+    TEST_ASSERT_EQUAL_HEX32(0x56777889, bigint_out[3]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintAddBigintWithOverflow()
+{
+    int32_t bigint_one[4] = {0x11223344, 0x12312355, 0xFFFFFFFF, 0x12333445};
+    int32_t bigint_two[4] = {0x00112233, 0x85642144, 0x12442333, 0x44444444};
+    int32_t bigint_out[4] = {0};
+    int ret;
+
+    ret = bigint_add_bigint(bigint_one, bigint_two, bigint_out, 4);
+    TEST_ASSERT_EQUAL_HEX32(0x11335577, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x97954499, bigint_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x12442332, bigint_out[2]);
+    TEST_ASSERT_EQUAL_HEX32(0x5677788A, bigint_out[3]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintAddBigintMaxValueExceeded()
+{
+    int32_t bigint_one[4] = {0x11223344, 0x12312355, 0x13543612, 0xFFFFFFFF};
+    int32_t bigint_two[4] = {0x00112233, 0x85642144, 0x12442333, 0x44444444};
+    int32_t bigint_out[4] = {0};
+    int ret;
+
+    ret = bigint_add_bigint(bigint_one, bigint_two, bigint_out, 4);
+    TEST_ASSERT_EQUAL_HEX32(0x11335577, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x97954499, bigint_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x25985945, bigint_out[2]);
+    TEST_ASSERT_EQUAL_HEX32(0x44444443, bigint_out[3]);
+
+    TEST_ASSERT_EQUAL(-1, ret);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
 
+    // full_add
     RUN_TEST(test_FullAddSmallNumbers);
     RUN_TEST(test_FullAddBigNumbers);
     RUN_TEST(test_FullAddSubtractSmallNumbers);
     RUN_TEST(test_FullAddSubtractBigNumbers);
 
+    // bigint_add_int
     RUN_TEST(test_BigintAddIntWithoutOverflow);
     RUN_TEST(test_BigintAddIntWithOverflow);
     RUN_TEST(test_SuperBigintAddIntWithoutOverflow);
     RUN_TEST(test_SuperBigintAddIntWithOverflow);
-    RUN_TEST(test_BigIntAddCompleteOverflowError);
+
+    // bigint_add_bigint
+    RUN_TEST(test_BigintAddCompleteOverflowError);
+    RUN_TEST(test_BigintAddBigintWithoutOverflow);
+    RUN_TEST(test_BigintAddBigintWithOverflow);
+    RUN_TEST(test_BigintAddBigintMaxValueExceeded);
 
     return UNITY_END();
 }
