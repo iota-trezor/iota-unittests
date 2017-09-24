@@ -145,6 +145,20 @@ void test_TritsToBytesPositiveNumber()
     TEST_ASSERT_EQUAL(0, ret);
 }
 
+void test_TritsToBytesSmallNegativeNumber()
+{
+    trit_t trits_in[243] = {0};
+    trit_t first_trits[3] = {-1, 0, -1}; // -10 = 0xF6
+    memcpy(trits_in, first_trits, sizeof(first_trits));
+    int32_t bytes_out[12] = {0};
+
+    int ret;
+    ret = trits_to_bytes(trits_in, bytes_out);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFF6, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[1]);
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -159,6 +173,7 @@ int main(void)
     // trits_to_bytes
     RUN_TEST(test_TritsToBytesSmallPositiveNumber);
     RUN_TEST(test_TritsToBytesPositiveNumber);
+    RUN_TEST(test_TritsToBytesSmallNegativeNumber);
 
     return UNITY_END();
 }
