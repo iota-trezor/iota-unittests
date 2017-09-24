@@ -180,6 +180,95 @@ void test_BigintAddBigintMaxValueExceeded()
     TEST_ASSERT_EQUAL(-1, ret);
 }
 
+void test_BigintSubBigintWithoutOverflow()
+{
+    int32_t bigint_one[2] = {0x00000008, 0x00050000};
+    int32_t bigint_two[2] = {0x00000001, 0x00030000};
+    int32_t bigint_out[2] = {0};
+    int ret;
+
+    ret = bigint_sub_bigint(bigint_one, bigint_two, bigint_out, 2);
+    TEST_ASSERT_EQUAL_HEX32(0x00000007, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00020000, bigint_out[1]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintSubBigintWithOverflow()
+{
+    int32_t bigint_one[2] = {0x00000008, 0x00000000};
+    int32_t bigint_two[2] = {0x00000009, 0x00000000};
+    int32_t bigint_out[2] = {0};
+    int ret;
+
+    ret = bigint_sub_bigint(bigint_one, bigint_two, bigint_out, 2);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bigint_out[1]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintSubBigintSubtractNegativeNumber()
+{
+    //8 - (-1) = 9
+    int32_t bigint_one[2] = {0x00000008, 0x00000000};
+    int32_t bigint_two[2] = {0xFFFFFFFF, 0xFFFFFFFF}; // minus 1
+    int32_t bigint_out[2] = {0};
+    int ret;
+
+    ret = bigint_sub_bigint(bigint_one, bigint_two, bigint_out, 2);
+    TEST_ASSERT_EQUAL_HEX32(0x00000009, bigint_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bigint_out[1]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintSubBigintMinValueExceeded()
+{
+    // Not implemented
+}
+
+void test_BigintCmpBigintEqual()
+{
+    int32_t bigint_one[2] = {0x00000008, 0x00007000};
+    int32_t bigint_two[2] = {0x00000008, 0x00007000};
+    int8_t ret;
+
+    ret = bigint_cmp_bigint(bigint_one, bigint_two, 2);
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BigintCmpBigintFirstIsBigger()
+{
+    int32_t bigint_one[2] = {0x00000008, 0x00008000};
+    int32_t bigint_two[2] = {0x00000009, 0x00007000};
+    int8_t ret;
+
+    ret = bigint_cmp_bigint(bigint_one, bigint_two, 2);
+    TEST_ASSERT_EQUAL(1, ret);
+}
+
+void test_BigintCmpBigintSecondIsBigger()
+{
+    int32_t bigint_one[2] = {0x00000008, 0x00008000};
+    int32_t bigint_two[2] = {0x00000009, 0x00009000};
+    int8_t ret;
+
+    ret = bigint_cmp_bigint(bigint_one, bigint_two, 2);
+    TEST_ASSERT_EQUAL(-1, ret);
+}
+
+void test_BigintNot()
+{
+    int32_t bigint_in[2] = {0x54000008, 0xABABABAB};
+    int ret;
+
+    ret = bigint_not(bigint_in, 2);
+    TEST_ASSERT_EQUAL_HEX32(0xABFFFFF7, bigint_in[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x54545454, bigint_in[1]);
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -201,6 +290,20 @@ int main(void)
     RUN_TEST(test_BigintAddBigintWithoutOverflow);
     RUN_TEST(test_BigintAddBigintWithOverflow);
     RUN_TEST(test_BigintAddBigintMaxValueExceeded);
+
+    // bigint_sub_bigint
+    RUN_TEST(test_BigintSubBigintWithoutOverflow);
+    RUN_TEST(test_BigintSubBigintWithOverflow);
+    RUN_TEST(test_BigintSubBigintSubtractNegativeNumber);
+    RUN_TEST(test_BigintSubBigintMinValueExceeded);
+
+    // bigint_cmp_bigint
+    RUN_TEST(test_BigintCmpBigintEqual);
+    RUN_TEST(test_BigintCmpBigintFirstIsBigger);
+    RUN_TEST(test_BigintCmpBigintSecondIsBigger);
+
+    // bigint_not
+    RUN_TEST(test_BigintNot);
 
     return UNITY_END();
 }
