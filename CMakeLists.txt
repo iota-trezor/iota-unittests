@@ -10,6 +10,7 @@ add_subdirectory(vendor)
 add_executable(conversion_test
 	tests/conversion_test.c
 	iota/conversion.c
+        iota/bigint.c
 )
 target_link_libraries(conversion_test Unity)
 add_test(conversion conversion_test)

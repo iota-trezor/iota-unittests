@@ -1,5 +1,6 @@
 #include <unity.h>
 #include "../iota/conversion.h"
+#include <string.h>
 
 void test_ThreeTritsToSingleTryte(void)
 {
@@ -112,6 +113,38 @@ void test_TrytesToTrits(void)
     TEST_ASSERT_EQUAL(0, ret);
 }
 
+void test_TritsToBytesSmallPositiveNumber()
+{
+    trit_t trits_in[243] = {0};
+    trit_t first_trits[3] = {1, 0, 1}; // 10
+    memcpy(trits_in, first_trits, sizeof(first_trits));
+    int32_t bytes_out[12] = {0};
+
+    int ret;
+    ret = trits_to_bytes(trits_in, bytes_out);
+    TEST_ASSERT_EQUAL_HEX32(0x0000000A, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_TritsToBytesPositiveNumber()
+{
+    trit_t trits_in[243] = {0};
+    trit_t first_trits[24] = { 1, 0,  1, -1, -1, 1, 0, -1,  0, 1, 1, 1,
+                              -1, 0, -1, -1, -1, 1, 1,  1, -1, 1, 0, 0};
+    memcpy(trits_in, first_trits, sizeof(first_trits));
+    int32_t bytes_out[12] = {0};
+
+    int ret;
+    ret = trits_to_bytes(trits_in, bytes_out);
+
+    TEST_ASSERT_EQUAL_HEX32(0x00000080, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000002, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[2]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -122,6 +155,10 @@ int main(void)
     RUN_TEST(test_Int32ToTrits);
     RUN_TEST(test_Int32ToTritsMaxLengthExceeded);
     RUN_TEST(test_TrytesToTrits);
+
+    // trits_to_bytes
+    RUN_TEST(test_TritsToBytesSmallPositiveNumber);
+    RUN_TEST(test_TritsToBytesPositiveNumber);
 
     return UNITY_END();
 }
