@@ -156,11 +156,33 @@ void test_TritsToBytesSmallNegativeNumber()
     ret = trits_to_bytes(trits_in, bytes_out);
     TEST_ASSERT_EQUAL_HEX32(0xFFFFFFF6, bytes_out[0]);
     TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[2]);
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_TritsToBytesLastTritIsOne()
+void testTritsToBytesLargeNegativeNumber()
 {
+    trit_t trits_in[243] = {0};
+    trit_t first_trits[24] = { -1, 0,  -1, +1, +1, -1, 0, +1,  0, -1, -1, -1,
+                              +1, 0, +1, +1, +1, -1, -1,  -1, +1, -1, 0, 0};
+    memcpy(trits_in, first_trits, sizeof(first_trits));
+    int32_t bytes_out[12] = {0};
+
+    int ret;
+    ret = trits_to_bytes(trits_in, bytes_out);
+
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFF80, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFD, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[2]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+
+void test_TritsToBytesLastTritIsIgnored()
+{
+    // Last trit is 1, but will be ignored by the conversion.
+    // It is considered to be zero
     trit_t trits_in[243] = {0};
     trits_in[242] = 1;
     int32_t bytes_out[12] = {0};
@@ -168,17 +190,17 @@ void test_TritsToBytesLastTritIsOne()
 
     ret = trits_to_bytes(trits_in, bytes_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0x4B9D12C9, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x3E00ECD3, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0xBCD3D7DF, bytes_out[11]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[11]);
 
     TEST_ASSERT_EQUAL(0, ret);
 }
 
 void testTritsToBytesLargestPossibleNumber()
 {
-
-    TEST_IGNORE_MESSAGE("still investigating what would be the correct response");
+    // Last trit is 1, but will be ignored by the conversion.
+    // It is considered to be zero
     trit_t trits_in[243];
     for (int i = 0; i < 243; i++) { trits_in[i] = 1; }
     int32_t bytes_out[12];
@@ -186,7 +208,67 @@ void testTritsToBytesLargestPossibleNumber()
 
     ret = trits_to_bytes(trits_in, bytes_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0,0);
+    TEST_ASSERT_EQUAL_HEX32(0xA5CE8964, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x9F007669, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x5E69EBEF, bytes_out[11]);
+}
+
+void testTritsToBytesAllZeros()
+{
+    trit_t trits_in[243] = {0};
+    int32_t bytes_out[12];
+    int ret;
+
+    ret = trits_to_bytes(trits_in, bytes_out);
+
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[11]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BytesToTritsAllZeros()
+{
+    int32_t bytes_in[12] = {0};
+    trit_t trits_out[243] = {0};
+    // initialize with wrong value
+    for (int i = 0; i < 243; i++) { trits_out[i] = 127; }
+    int ret;
+
+    ret = bytes_to_trits(bytes_in, trits_out);
+
+    TEST_ASSERT_EACH_EQUAL_INT8(0, trits_out, 243);
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BytesToTritsSmallPositiveNumber()
+{
+    int32_t bytes_in[12] = {0};
+    bytes_in[0] = 0x0000000A; // 10
+    trit_t trits_out[243] = {0};
+    int ret;
+
+    ret = bytes_to_trits(bytes_in, trits_out);
+
+    TEST_ASSERT_EQUAL(1, trits_out[0]);
+    TEST_ASSERT_EQUAL(0, trits_out[1]);
+    TEST_ASSERT_EQUAL(1, trits_out[2]);
+}
+
+void test_BytesToTritsLargePositiveNumber()
+{
+    int32_t bytes_in[12] = {0};
+    bytes_in[0] = 0x00000080;
+    bytes_in[1] = 0x00000002;
+    trit_t trits_out[243] = {0};
+    int ret;
+
+    ret = bytes_to_trits(bytes_in, trits_out);
+
+    trit_t expected_trits[24] = { 1, 0,  1, -1, -1, 1, 0, -1,  0, 1, 1, 1,
+                                 -1, 0, -1, -1, -1, 1, 1,  1, -1, 1, 0, 0};
+    TEST_ASSERT_EQUAL_INT8_ARRAY(expected_trits, trits_out, 24);
 }
 
 int main(void)
@@ -204,8 +286,15 @@ int main(void)
     RUN_TEST(test_TritsToBytesSmallPositiveNumber);
     RUN_TEST(test_TritsToBytesPositiveNumber);
     RUN_TEST(test_TritsToBytesSmallNegativeNumber);
-    RUN_TEST(test_TritsToBytesLastTritIsOne);
+    RUN_TEST(testTritsToBytesLargeNegativeNumber);
+    RUN_TEST(test_TritsToBytesLastTritIsIgnored);
     RUN_TEST(testTritsToBytesLargestPossibleNumber);
+    RUN_TEST(testTritsToBytesAllZeros);
+
+    // bytes_to_trits
+    RUN_TEST(test_BytesToTritsAllZeros);
+    RUN_TEST(test_BytesToTritsSmallPositiveNumber);
+    RUN_TEST(test_BytesToTritsLargePositiveNumber);
 
     return UNITY_END();
 }
