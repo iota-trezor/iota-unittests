@@ -159,6 +159,36 @@ void test_TritsToBytesSmallNegativeNumber()
     TEST_ASSERT_EQUAL(0, ret);
 }
 
+void test_TritsToBytesLastTritIsOne()
+{
+    trit_t trits_in[243] = {0};
+    trits_in[242] = 1;
+    int32_t bytes_out[12] = {0};
+    int ret;
+
+    ret = trits_to_bytes(trits_in, bytes_out);
+
+    TEST_ASSERT_EQUAL_HEX32(0x4B9D12C9, bytes_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x3E00ECD3, bytes_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0xBCD3D7DF, bytes_out[11]);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void testTritsToBytesLargestPossibleNumber()
+{
+
+    TEST_IGNORE_MESSAGE("still investigating what would be the correct response");
+    trit_t trits_in[243];
+    for (int i = 0; i < 243; i++) { trits_in[i] = 1; }
+    int32_t bytes_out[12];
+    int ret;
+
+    ret = trits_to_bytes(trits_in, bytes_out);
+
+    TEST_ASSERT_EQUAL_HEX32(0,0);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -174,6 +204,8 @@ int main(void)
     RUN_TEST(test_TritsToBytesSmallPositiveNumber);
     RUN_TEST(test_TritsToBytesPositiveNumber);
     RUN_TEST(test_TritsToBytesSmallNegativeNumber);
+    RUN_TEST(test_TritsToBytesLastTritIsOne);
+    RUN_TEST(testTritsToBytesLargestPossibleNumber);
 
     return UNITY_END();
 }
