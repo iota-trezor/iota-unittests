@@ -271,6 +271,37 @@ void test_BytesToTritsLargePositiveNumber()
     TEST_ASSERT_EQUAL_INT8_ARRAY(expected_trits, trits_out, 24);
 }
 
+void test_CharsToTrytes()
+{
+    char chars_in[] = "9ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    tryte_t trytes_out[27] = {0};
+    tryte_t expected_trytes[27] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                            -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1};
+    int ret;
+
+    ret = chars_to_trytes(chars_in, trytes_out, 27);
+
+    TEST_ASSERT_EQUAL_INT8_ARRAY(expected_trytes, trytes_out, 27);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_TrytesToChars()
+{
+    tryte_t trytes_in[27] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+                            -13, -12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1};
+    char chars_out[27] = {'\0'};
+    char expected_chars[] = "9ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int ret;
+
+    ret = trytes_to_chars(trytes_in, chars_out, 27);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_chars, chars_out, 27);
+
+    TEST_ASSERT_EQUAL(0, ret);
+
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -295,6 +326,12 @@ int main(void)
     RUN_TEST(test_BytesToTritsAllZeros);
     RUN_TEST(test_BytesToTritsSmallPositiveNumber);
     RUN_TEST(test_BytesToTritsLargePositiveNumber);
+
+    // chars to trytes
+    RUN_TEST(test_CharsToTrytes);
+
+    // trytes to chars
+    RUN_TEST(test_TrytesToChars);
 
     return UNITY_END();
 }
