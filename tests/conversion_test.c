@@ -113,158 +113,158 @@ void test_TrytesToTrits(void)
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_TritsToBytesSmallPositiveNumber()
+void test_TritsToWordsSmallPositiveNumber()
 {
     trit_t trits_in[243] = {0};
     trit_t first_trits[3] = {1, 0, 1}; // 10
     memcpy(trits_in, first_trits, sizeof(first_trits));
-    int32_t bytes_out[12] = {0};
+    int32_t words_out[12] = {0};
 
     int ret;
-    ret = trits_to_bytes(trits_in, bytes_out);
-    TEST_ASSERT_EQUAL_HEX32(0x0000000A, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
+    ret = trits_to_words(trits_in, words_out);
+    TEST_ASSERT_EQUAL_HEX32(0x0000000A, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[1]);
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_TritsToBytesPositiveNumber()
+void test_TritsToWordsPositiveNumber()
 {
     trit_t trits_in[243] = {0};
     trit_t first_trits[24] = { 1, 0,  1, -1, -1, 1, 0, -1,  0, 1, 1, 1,
                               -1, 0, -1, -1, -1, 1, 1,  1, -1, 1, 0, 0};
     memcpy(trits_in, first_trits, sizeof(first_trits));
-    int32_t bytes_out[12] = {0};
+    int32_t words_out[12] = {0};
 
     int ret;
-    ret = trits_to_bytes(trits_in, bytes_out);
+    ret = trits_to_words(trits_in, words_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0x00000080, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000002, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[2]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000080, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000002, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[2]);
 
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_TritsToBytesSmallNegativeNumber()
+void test_TritsToWordsSmallNegativeNumber()
 {
     trit_t trits_in[243] = {0};
     trit_t first_trits[3] = {-1, 0, -1}; // -10 = 0xF6
     memcpy(trits_in, first_trits, sizeof(first_trits));
-    int32_t bytes_out[12] = {0};
+    int32_t words_out[12] = {0};
 
     int ret;
-    ret = trits_to_bytes(trits_in, bytes_out);
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFF6, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[2]);
+    ret = trits_to_words(trits_in, words_out);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFF6, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, words_out[2]);
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void testTritsToBytesLargeNegativeNumber()
+void testTritsToWordsLargeNegativeNumber()
 {
     trit_t trits_in[243] = {0};
     trit_t first_trits[24] = { -1, 0,  -1, +1, +1, -1, 0, +1,  0, -1, -1, -1,
                               +1, 0, +1, +1, +1, -1, -1,  -1, +1, -1, 0, 0};
     memcpy(trits_in, first_trits, sizeof(first_trits));
-    int32_t bytes_out[12] = {0};
+    int32_t words_out[12] = {0};
 
     int ret;
-    ret = trits_to_bytes(trits_in, bytes_out);
+    ret = trits_to_words(trits_in, words_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFF80, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFD, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, bytes_out[2]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFF80, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFD, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0xFFFFFFFF, words_out[2]);
 
     TEST_ASSERT_EQUAL(0, ret);
 }
 
 
-void test_TritsToBytesLastTritIsIgnored()
+void test_TritsToWordsLastTritIsIgnored()
 {
     // Last trit is 1, but will be ignored by the conversion.
     // It is considered to be zero
     trit_t trits_in[243] = {0};
     trits_in[242] = 1;
-    int32_t bytes_out[12] = {0};
+    int32_t words_out[12] = {0};
     int ret;
 
-    ret = trits_to_bytes(trits_in, bytes_out);
+    ret = trits_to_words(trits_in, words_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[11]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[11]);
 
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void testTritsToBytesLargestPossibleNumber()
+void testTritsToWordsLargestPossibleNumber()
 {
     // Last trit is 1, but will be ignored by the conversion.
     // It is considered to be zero
     trit_t trits_in[243];
     for (int i = 0; i < 243; i++) { trits_in[i] = 1; }
-    int32_t bytes_out[12];
+    int32_t words_out[12];
     int ret;
 
-    ret = trits_to_bytes(trits_in, bytes_out);
+    ret = trits_to_words(trits_in, words_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0xA5CE8964, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x9F007669, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0x5E69EBEF, bytes_out[11]);
+    TEST_ASSERT_EQUAL_HEX32(0xA5CE8964, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x9F007669, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x5E69EBEF, words_out[11]);
 }
 
-void testTritsToBytesAllZeros()
+void testTritsToWordsAllZeros()
 {
     trit_t trits_in[243] = {0};
-    int32_t bytes_out[12];
+    int32_t words_out[12];
     int ret;
 
-    ret = trits_to_bytes(trits_in, bytes_out);
+    ret = trits_to_words(trits_in, words_out);
 
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[0]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[1]);
-    TEST_ASSERT_EQUAL_HEX32(0x00000000, bytes_out[11]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[0]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[1]);
+    TEST_ASSERT_EQUAL_HEX32(0x00000000, words_out[11]);
 
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_BytesToTritsAllZeros()
+void test_WordsToTritsAllZeros()
 {
-    int32_t bytes_in[12] = {0};
+    int32_t words_in[12] = {0};
     trit_t trits_out[243] = {0};
     // initialize with wrong value
     for (int i = 0; i < 243; i++) { trits_out[i] = 127; }
     int ret;
 
-    ret = bytes_to_trits(bytes_in, trits_out);
+    ret = words_to_trits(words_in, trits_out);
 
     TEST_ASSERT_EACH_EQUAL_INT8(0, trits_out, 243);
     TEST_ASSERT_EQUAL(0, ret);
 }
 
-void test_BytesToTritsSmallPositiveNumber()
+void test_WordsToTritsSmallPositiveNumber()
 {
-    int32_t bytes_in[12] = {0};
-    bytes_in[0] = 0x0000000A; // 10
+    int32_t words_in[12] = {0};
+    words_in[0] = 0x0000000A; // 10
     trit_t trits_out[243] = {0};
     int ret;
 
-    ret = bytes_to_trits(bytes_in, trits_out);
+    ret = words_to_trits(words_in, trits_out);
 
     TEST_ASSERT_EQUAL(1, trits_out[0]);
     TEST_ASSERT_EQUAL(0, trits_out[1]);
     TEST_ASSERT_EQUAL(1, trits_out[2]);
 }
 
-void test_BytesToTritsLargePositiveNumber()
+void test_WordsToTritsLargePositiveNumber()
 {
-    int32_t bytes_in[12] = {0};
-    bytes_in[0] = 0x00000080;
-    bytes_in[1] = 0x00000002;
+    int32_t words_in[12] = {0};
+    words_in[0] = 0x00000080;
+    words_in[1] = 0x00000002;
     trit_t trits_out[243] = {0};
     int ret;
 
-    ret = bytes_to_trits(bytes_in, trits_out);
+    ret = words_to_trits(words_in, trits_out);
 
     trit_t expected_trits[24] = { 1, 0,  1, -1, -1, 1, 0, -1,  0, 1, 1, 1,
                                  -1, 0, -1, -1, -1, 1, 1,  1, -1, 1, 0, 0};
@@ -313,19 +313,19 @@ int main(void)
     RUN_TEST(test_Int32ToTritsMaxLengthExceeded);
     RUN_TEST(test_TrytesToTrits);
 
-    // trits_to_bytes
-    RUN_TEST(test_TritsToBytesSmallPositiveNumber);
-    RUN_TEST(test_TritsToBytesPositiveNumber);
-    RUN_TEST(test_TritsToBytesSmallNegativeNumber);
-    RUN_TEST(testTritsToBytesLargeNegativeNumber);
-    RUN_TEST(test_TritsToBytesLastTritIsIgnored);
-    RUN_TEST(testTritsToBytesLargestPossibleNumber);
-    RUN_TEST(testTritsToBytesAllZeros);
+    // trits_to_words
+    RUN_TEST(test_TritsToWordsSmallPositiveNumber);
+    RUN_TEST(test_TritsToWordsPositiveNumber);
+    RUN_TEST(test_TritsToWordsSmallNegativeNumber);
+    RUN_TEST(testTritsToWordsLargeNegativeNumber);
+    RUN_TEST(test_TritsToWordsLastTritIsIgnored);
+    RUN_TEST(testTritsToWordsLargestPossibleNumber);
+    RUN_TEST(testTritsToWordsAllZeros);
 
-    // bytes_to_trits
-    RUN_TEST(test_BytesToTritsAllZeros);
-    RUN_TEST(test_BytesToTritsSmallPositiveNumber);
-    RUN_TEST(test_BytesToTritsLargePositiveNumber);
+    // words_to_trits
+    RUN_TEST(test_WordsToTritsAllZeros);
+    RUN_TEST(test_WordsToTritsSmallPositiveNumber);
+    RUN_TEST(test_WordsToTritsLargePositiveNumber);
 
     // chars to trytes
     RUN_TEST(test_CharsToTrytes);
