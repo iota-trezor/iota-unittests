@@ -32,11 +32,20 @@ add_executable(kerl_test
 target_link_libraries(kerl_test Unity)
 add_test(kerl kerl_test)
 
-add_executable(kerl_full_test
-	tests/kerl_full_test.c
+add_executable(kerl_trytes_and_hashes_test
+	tests/kerl_trytes_and_hashes_test.c
 	iota/kerl.c
 	iota/bigint.c
 	iota/conversion.c
 	vendor/trezor-crypto/sha3.c)
-target_link_libraries(kerl_full_test Unity)
-add_test(kerl_full kerl_full_test)
+target_link_libraries(kerl_trytes_and_hashes_test Unity)
+add_test(kerl_trytes_and_hashes kerl_trytes_and_hashes_test)
+
+add_executable(kerl_trytes_and_multi_squeeze_test
+	tests/kerl_trytes_and_multi_squeeze_test.c
+	iota/kerl.c
+	iota/bigint.c
+	iota/conversion.c
+	vendor/trezor-crypto/sha3.c)
+target_link_libraries(kerl_trytes_and_multi_squeeze_test Unity)
+add_test(kerl_trytes_and_multi_squeeze kerl_trytes_and_multi_squeeze_test)
