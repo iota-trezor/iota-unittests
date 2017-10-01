@@ -5,7 +5,7 @@ include(CTest)
 
 add_definitions(-DKERL_TEST_VECTORS_PATH="${PROJECT_SOURCE_DIR}/vendor/kerl/test_vectors/")
 
-include_directories(vendor/trezor-crypto)
+include_directories(vendor)
 add_subdirectory(vendor)
 
 
