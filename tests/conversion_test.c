@@ -271,6 +271,32 @@ void test_WordsToTritsLargePositiveNumber()
     TEST_ASSERT_EQUAL_INT8_ARRAY(expected_trits, trits_out, 24);
 }
 
+void test_WordsToBytes()
+{
+    int32_t words_in[2] = {0x12345678, 0xAABBCCDD};
+    char bytes_out[8];
+    char expected_bytes[] = {0xAA, 0xBB, 0xCC, 0xDD, 0x12, 0x34, 0x56, 0x78};
+    int ret;
+
+    ret = words_to_bytes(words_in, bytes_out, 2);
+
+    TEST_ASSERT_EQUAL_HEX8_ARRAY(expected_bytes, bytes_out, 8);
+
+    TEST_ASSERT_EQUAL(0, ret);
+}
+
+void test_BytesToWords()
+{
+    char bytes_in[] = {0xAA, 0xBB, 0xCC, 0xDD, 0x12, 0x34, 0x56, 0x78};
+    int32_t words_out[2];
+    int32_t expected_words[2] = {0x12345678, 0xAABBCCDD};
+    int ret;
+
+    ret = bytes_to_words(bytes_in, words_out, 2);
+
+    TEST_ASSERT_EQUAL_HEX32_ARRAY(expected_words, words_out, 2);
+}
+
 void test_CharsToTrytes()
 {
     char chars_in[] = "9ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -326,6 +352,12 @@ int main(void)
     RUN_TEST(test_WordsToTritsAllZeros);
     RUN_TEST(test_WordsToTritsSmallPositiveNumber);
     RUN_TEST(test_WordsToTritsLargePositiveNumber);
+
+    // words_to_bytes
+    RUN_TEST(test_WordsToBytes);
+
+    // bytes_to_words
+    RUN_TEST(test_BytesToWords);
 
     // chars to trytes
     RUN_TEST(test_CharsToTrytes);

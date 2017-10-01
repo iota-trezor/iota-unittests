@@ -20,3 +20,21 @@ add_executable(bigint_test
 	iota/bigint.c)
 target_link_libraries(bigint_test Unity)
 add_test(bigint bigint_test)
+
+add_executable(kerl_test
+	tests/kerl_test.c
+	iota/kerl.c
+	iota/bigint.c
+	iota/conversion.c
+	vendor/trezor-crypto/sha3.c)
+target_link_libraries(kerl_test Unity)
+add_test(kerl kerl_test)
+
+add_executable(kerl_full_test
+	tests/kerl_full_test.c
+	iota/kerl.c
+	iota/bigint.c
+	iota/conversion.c
+	vendor/trezor-crypto/sha3.c)
+target_link_libraries(kerl_full_test Unity)
+add_test(kerl_full kerl_full_test)
