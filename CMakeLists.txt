@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 
 include(CTest)
 
+add_definitions(-DKERL_TEST_VECTORS_PATH="${PROJECT_SOURCE_DIR}/vendor/kerl/test_vectors/")
+
 include_directories(vendor/trezor-crypto)
 add_subdirectory(vendor)
 
