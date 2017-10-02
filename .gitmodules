@@ -7,3 +7,6 @@
 [submodule "vendor/trezor-crypto"]
 	path = vendor/trezor-crypto
 	url = https://github.com/trezor/trezor-crypto
+[submodule "vendor/kerl"]
+	path = vendor/kerl
+	url = https://github.com/iotaledger/kerl
