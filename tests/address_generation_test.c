@@ -30,7 +30,9 @@ void test_AddressGeneration()
     // go through all hashes
     char seed[81];
     char expected_address[81];
-    while((read = getline(&line, &len, fp)) != -1) {
+    uint32_t cnt = 0;
+    while(cnt < 100 && (read = getline(&line, &len, fp)) != -1) {
+        cnt++;
         memcpy(seed, line, 81);
         memcpy(expected_address, &line[82], 81);
 
@@ -50,6 +52,7 @@ void test_AddressGeneration()
         char chars_out[81] = {0};
         trits_to_trytes(public_addr, trytes_out, 243);
         trytes_to_chars(trytes_out, chars_out, 81);
+
         TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected_address, chars_out, 81, seed);
     }
 }
