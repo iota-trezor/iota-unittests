@@ -36,7 +36,7 @@ void test_AddIndexToSeedOverflow()
 
 void test_AddressGeneration()
 {
-    if(1) TEST_IGNORE_MESSAGE("Not running because it takes much time.");
+    if(0) TEST_IGNORE_MESSAGE("Not running because it takes much time.");
     // Open the test-vector file
     FILE* fp;
     char* line = NULL;
@@ -62,7 +62,7 @@ void test_AddressGeneration()
     char seed[81];
     char expected_address[4][81];
     uint32_t cnt = 0;
-    while(cnt < 5 && (read = getline(&line, &len, fp)) != -1) {
+    while(cnt < 100 && (read = getline(&line, &len, fp)) != -1) {
         cnt++;
         memcpy(seed, line, 81);
         memcpy(expected_address[0], &line[82], 81);
