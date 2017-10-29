@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 include(CTest)
 
 add_definitions(-DKERL_TEST_VECTORS_PATH="${PROJECT_SOURCE_DIR}/vendor/kerl/test_vectors/")
+add_definitions(-DUNITTESTING=1)
 
 include_directories(.)
 add_subdirectory(vendor)
