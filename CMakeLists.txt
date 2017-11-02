@@ -5,6 +5,7 @@ include(CTest)
 
 add_definitions(-DKERL_TEST_VECTORS_PATH="${PROJECT_SOURCE_DIR}/vendor/kerl/test_vectors/")
 add_definitions(-DUNITTESTING=1)
+add_definitions(-DTEST_N_ADDRESSES=1)
 
 include_directories(.)
 add_subdirectory(vendor)
@@ -69,3 +70,13 @@ add_executable(address_generation_test
         vendor/trezor-crypto/sha3.c)
 target_link_libraries(address_generation_test Unity)
 add_test(address_generation address_generation_test)
+
+add_executable(transaction_test
+	tests/transaction_test.c
+	iota/transaction.c
+	iota/bigint.c
+	iota/conversion.c
+	iota/kerl.c
+	vendor/trezor-crypto/sha3.c)
+target_link_libraries(transaction_test Unity)
+add_test(transaction_test transaction_test)

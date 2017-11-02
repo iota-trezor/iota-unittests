@@ -4,6 +4,10 @@
 #include "../iota/conversion.h"
 #include "../iota/addresses.h"
 
+#ifndef TEST_N_ADDRESSES
+#define TEST_N_ADDRESSES 100
+#endif
+
 void test_AddIndexToSeed()
 {
     trit_t trits[243] = {0};
@@ -62,7 +66,7 @@ void test_AddressGeneration()
     char seed[81];
     char expected_address[4][81];
     uint32_t cnt = 0;
-    while(cnt < 100 && (read = getline(&line, &len, fp)) != -1) {
+    while(cnt < TEST_N_ADDRESSES && (read = getline(&line, &len, fp)) != -1) {
         cnt++;
         memcpy(seed, line, 81);
         memcpy(expected_address[0], &line[82], 81);
