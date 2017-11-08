@@ -77,6 +77,7 @@ add_executable(transaction_test
 	iota/bigint.c
 	iota/conversion.c
 	iota/kerl.c
-	vendor/trezor-crypto/sha3.c)
+	vendor/trezor-crypto/sha3.c
+	iota/addresses.c)
 target_link_libraries(transaction_test Unity)
 add_test(transaction_test transaction_test)
