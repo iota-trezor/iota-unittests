@@ -8,6 +8,11 @@
 #define TEST_N_ADDRESSES 100
 #endif
 
+void progress_callback(uint32_t progress)
+{
+    (void) progress;
+}
+
 void test_AddIndexToSeed()
 {
     trit_t trits[243] = {0};
@@ -85,7 +90,7 @@ void test_AddressGeneration()
             generate_private_key(seed_trits, i, private_key);
 
             trit_t public_addr[243];
-            generate_public_address(private_key, public_addr);
+            generate_public_address(private_key, public_addr, progress_callback);
 
             // convert output to char format
             tryte_t trytes_out[81] = {0};
